@@ -1,6 +1,6 @@
 ---
 tipo: trabajo
-cliente: "[[Cliente Marcelo calle 3]]"
+cliente: "[[Cliente Marcelo Gualeguaychú]]"
 dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-01-21 00:00

@@ -1,13 +1,14 @@
 ---
 tipo: trabajo
-cliente: "[[Cliente Carolina de 58]]"
+cliente: "[[Cliente Carolina local galería Malvinas]]"
 dirección: Sin registrar
 prioridad: 🔵 Media
-fecha: "{{date}} {{time}}"
+fecha: 2026-04-06 08:07
 estado: 🛠️ En curso
 mano_de_obra: 0
 pagado: false
 ---
+
 
 # 📋 Presupuesto y Tareas
 - [ ] ver dónde está tablero del local y colocar luminaria

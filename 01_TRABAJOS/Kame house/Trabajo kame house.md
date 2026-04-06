@@ -1,6 +1,6 @@
 ---
 tipo: trabajo
-cliente: "[[Cliente kame house]]"
+cliente: "[[Cliente Kame house]]"
 dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-02-04 03:01

@@ -4,11 +4,12 @@ tipo: trabajo
 cliente: "[[Cliente - trabajo vivi mama guadalupe]]"
 fecha: 2026-02-24
 estado: 🛠️ Terminado
-prioridad: media
+prioridad: 🔵 Media
 mano_de_obra: 60000
 costo_materiales: 0
 pagado: true
 ---
+
 
 # 🛠️ Detalles de trabajo vivi mama guadalupe
 - **Dirección:** - **Tareas:**

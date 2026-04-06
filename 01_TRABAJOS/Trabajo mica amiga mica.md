@@ -1,14 +1,15 @@
 ---
 tipo: trabajo
-cliente: "[[Cliente mica amiga mica]]"
+cliente: "[[Cliente Mica amiga Mica]]"
 dirección: 82 e/122 y 123
 prioridad: 🔵 Media
 fecha: 2026-01-16
-estado: 🛠️ Pendiente
+estado: 🛠️ En curso
 mano_de_obra: 80000
 pagado: false
 fecha_cierre: 2026-02-23
 ---
+
 
 # 📋 Presupuesto y Tareas
 -Valor de presupuesto de intalación eléctrica 80000

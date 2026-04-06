@@ -1,6 +1,6 @@
 ---
 tipo: trabajo
-cliente: "[[Trabajo Papa del Ruso]]"
+cliente: "[[Cliente Papa del Ruso]]"
 telefono: 
 prioridad: 🔵 Media
 fecha: 2026-02-18 18:45
