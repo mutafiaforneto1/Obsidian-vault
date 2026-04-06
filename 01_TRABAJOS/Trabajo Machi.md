@@ -1,10 +1,10 @@
 ---
 tipo: trabajo
-cliente: "[[Trabajo Machi]]"
-dirección:
+cliente: "[[Cliente Machi]]"
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-01-16
-estado: 🛠️ terminado
+estado: 🛠️ Terminado
 mano_de_obra: 35000
 pagado: true
 ---

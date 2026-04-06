@@ -1,10 +1,10 @@
 ---
 tipo: trabajo
 cliente: "[[03_ADMIN/Cliente Tito]]"
-dirección:
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-02-04 02:49
-estado: 🛠️ pendiente
+estado: 🛠️ Pendiente
 mano_de_obra: 0
 pagado: false
 ---

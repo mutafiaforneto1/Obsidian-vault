@@ -4,7 +4,7 @@ cliente: "[[Cliente juanete]]"
 dirección: 50 e/ 8 y 9 n669 dto 7b
 prioridad: 🔵 Media
 fecha: 2026-01-20 09:00
-estado: 🛠️ terminado
+estado: 🛠️ Terminado
 mano_de_obra: 60000
 pagado: true
 ---

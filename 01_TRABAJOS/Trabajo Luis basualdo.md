@@ -4,7 +4,7 @@ cliente: "[[Cliente Luis basualdo]]"
 dirección: 122bis e/ 77 y 78
 prioridad: 🔵 Media
 fecha: 2026-01-16
-estado: 🛠️ terminado
+estado: 🛠️ Terminado
 mano_de_obra: 20000
 pagado: true
 ---

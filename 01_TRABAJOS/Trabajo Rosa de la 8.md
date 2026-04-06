@@ -1,10 +1,10 @@
 ---
 tipo: trabajo
 cliente: "[[Cliente Rosa de la 8]]"
-dirección:
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-02-04 02:57
-estado: 🛠️ terminado
+estado: 🛠️ Terminado
 mano_de_obra: 40000
 pagado: true
 ---

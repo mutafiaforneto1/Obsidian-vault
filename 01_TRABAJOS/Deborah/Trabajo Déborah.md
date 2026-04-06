@@ -4,7 +4,7 @@ cliente: "[[Cliente Déborah]]"
 dirección: 49 e/131 y 132
 prioridad: 🔵 Media
 fecha: 2026-01-17
-estado: 🛠️ terminado
+estado: 🛠️ Terminado
 mano_de_obra: 160000
 pagado: true
 ---

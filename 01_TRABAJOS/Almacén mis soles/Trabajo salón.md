@@ -1,10 +1,10 @@
 ---
 tipo: trabajo
 cliente: "[[Cliente almacén mis soles]]"
-dirección:
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-02-10 20:35
-estado: terminado
+estado: 🛠️ Terminado
 mano_de_obra: 0
 pagado: false
 fecha_cierre: 2026-02-23

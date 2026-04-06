@@ -1,7 +1,7 @@
 ---
 tipo: trabajo
 cliente: "[[Cliente Carolina de 58]]"
-dirección:
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: "{{date}} {{time}}"
 estado: 🛠️ En curso

@@ -1,10 +1,10 @@
 ---
 tipo: trabajo
 cliente: "[[Cliente kame house]]"
-dirección:
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-02-04 03:04
-estado: 🛠️ pendiente
+estado: 🛠️ Pendiente
 mano_de_obra: 0
 pagado: false
 ---

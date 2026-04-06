@@ -1,7 +1,7 @@
 ---
 tipo: trabajo
 cliente: "[[Cliente María Rosa]]"
-dirección:
+dirección: Sin registrar
 prioridad: 🔵 Media
 fecha: 2026-02-10 20:02
 estado: 🛠️ En curso

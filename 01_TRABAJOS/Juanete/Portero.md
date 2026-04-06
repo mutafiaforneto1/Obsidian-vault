@@ -4,7 +4,7 @@ cliente: "[[Cliente juanete]]"
 telefono: +54 9 221 600-4278
 prioridad: 🔵 Media
 fecha: 2026-02-18 18:55
-estado: 🛠️ terminado
+estado: 🛠️ Terminado
 mano_de_obra: 20000
 costo_materiales: 0
 pagado: true
