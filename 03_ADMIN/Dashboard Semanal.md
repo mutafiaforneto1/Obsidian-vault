@@ -1,162 +1,237 @@
 ---
 tipo: dashboard
-tema: semanal
-fecha_creación: 2026-04-06
+periodo: semanal
+semana: "2026-W15"
+fecha_creacion: 2026-04-06
+fecha_inicio: 2026-04-06
+fecha_fin: 2026-04-12
 ---
 
-# 📅 Dashboard Semanal
+# 📅 Dashboard Semanal — Semana del 6 al 12 de Abril
 
-> **Semana del:** `= this.semanaInicio`  
-> **Generado automáticamente** — no hace falta editar fechas
+## 🎯 Resumen de la Semana
 
 ```dataviewjs
-// --- CÁLCULO DE SEMANA AUTOMÁTICO ---
-// Semana actual basada en el lunes
-const hoy = new Date();
-const diaSemana = hoy.getDay(); // 0=dom, 1=lun, ...
-const diff = hoy.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1); // ajustar al lunes
-const lunesInicio = new Date(hoy.setDate(diff));
-const viernesFin = new Date(hoy);
-viernesFin.setDate(lunesInicio.getDate() + 4);
+const ahora = new Date();
+const hoy = ahora.toISOString().split('T')[0];
+const inicioSemana = new Date(ahora);
+inicioSemana.setDate(ahora.getDate() - ahora.getDay() + 1);
+const finSemana = new Date(inicioSemana);
+finSemana.setDate(inicioSemana.getDate() + 6);
 
-const fechaStart = lunesInicio.toISOString().split('T')[0]; // "2026-04-06"
-const fechaEnd = viernesFin.toISOString().split('T')[0]; // "2026-04-10"
+const inicioStr = inicioSemana.toISOString().split('T')[0];
+const finStr = finSemana.toISOString().split('T')[0];
 
-// Mostrar semana
-dv.header(2, `📅 Semana: ${formatDateEs(fechaStart)} — ${formatDateEs(fechaEnd)}`);
+const todos = dv.pages('"01_TRABAJOS"');
 
-function formatDateEs(fechaStr) {
-    const f = new Date(fechaStr + 'T12:00:00');
-    const dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-    return `${dias[f.getDay()]} ${f.getDate()} ${meses[f.getMonth()]}`;
-}
+// Trabajos de esta semana (por fecha o fecha_cierre)
+const estaSemana = todos.filter(p => {
+    if (!p.fecha && !p.fecha_cierre) return false;
+    const f = p.fecha ? String(p.fecha).substring(0, 10) : '';
+    const fc = p.fecha_cierre ? String(p.fecha_cierre).substring(0, 10) : '';
+    return (f >= inicioStr && f <= finStr) || (fc >= inicioStr && fc <= finStr);
+});
 
-// --- TRABAJOS DE ESTA SEMANA ---
-const todosTrabajos = dv.pages('"01_TRABAJOS"');
+// Cobros de esta semana
+const cobradosEstaSemana = estaSemana.filter(p => 
+    p.pagado === true || p.pagado === "true"
+);
 
-// Filtramos por fecha dentro de esta semana
-function estaEnSemana(fecha) {
-    if (!fecha) return false;
-    const f = String(fecha);
-    // Soporta formatos: "2026-04-06", "2026-04-06 10:00", etc
-    const fechaDate = new Date(f + 'T12:00:00');
-    return fechaDate >= lunesInicio && fechaDate <= viernesFin;
-}
+const sumaCobradaSe = cobradosEstaSemana.length > 0 
+    ? cobradosEstaSemana.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
 
-const trabajosSemana = todosTrabajos.filter(p => estaEnSemana(p.fecha));
+const pendientesSemana = estaSemana.filter(p => 
+    p.pagado === false || p.pagado === "false" || !p.pagado
+);
 
-dv.header(3, `🔨 Trabajos de esta semana: ${trabajosSemana.length}`);
+const sumaPendienteSe = pendientesSemana.length > 0 
+    ? pendientesSemana.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
 
-if (trabajosSemana.length > 0) {
-    dv.table(
-        ["📋 Trabajo", "Cliente", "Estado", "💰 M.O."],
-        trabajosSemana
-            .sort((a, b) => a.prioridad - (b.prioridad || 99))
-            .map(p => [
-                p.file.link,
-                p.cliente || "—",
-                p.estado || "Sin estado",
-                p.mano_de_obra ? `$${Number(p.mano_de_obra).toLocaleString()}` : "—"
-            ])
-    );
-} else {
-    dv.paragraph("_No hay trabajos registrados para esta semana._");
-}
+// Totales globales
+const todosPagados = todos.filter(p => p.pagado === true || p.pagado === "true");
+const totalCobrado = todosPagados.length > 0 
+    ? todosPagados.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
 
-// --- RESUMEN FINANCIERO SEMANAL ---
-dv.header(3, "💰 Resumen semanal");
+const todosDeudas = todos.filter(p => 
+    p.estado && p.estado.includes('Terminado') && 
+    (p.pagado === false || p.pagado === "false")
+);
+const totalDeuda = todosDeudas.length > 0 
+    ? todosDeudas.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
 
-const cobradosSemana = trabajosSemana.filter(p => p.pagado === true || p.pagado === "true");
-const sumaCobrado = cobradosSemana.length > 0 ? cobradosSemana.mano_de_obra.array().reduce((a, b) => a + Number(b), 0) : 0;
+dv.header(2, "📆 Rango");
+dv.paragraph(`**${inicioStr}** → **${finStr}**`);
+dv.paragraph("---");
 
-const pendientesSemana = trabajosSemana.filter(p => p.pagado === false || p.pagado === "false" || !p.pagado);
-const sumaPendiente = pendientesSemana.length > 0 ? pendientesSemana.mano_de_obra.array().reduce((a, b) => a + Number(b), 0) : 0;
+dv.header(3, "💵 Cobrado esta semana");
+dv.header(1, `$${sumaCobradaSe.toLocaleString()}`);
+dv.paragraph(`${cobradosEstaSemana.length} trabajo(s) cobrado(s)`);
 
-const enCursoSemana = trabajosSemana.filter(p => p.estado && p.estado.includes("En curso"));
+dv.paragraph("---");
 
-dv.paragraph(`**✅ Cobrado esta semana:** $${sumaCobrado.toLocaleString()}`);
-dv.paragraph(`**⏳ Por cobrar:** $${sumaPendiente.toLocaleString()}`);
-dv.paragraph(`**🛠️ En curso:** ${enCursoSemana.length} trabajo(s)`);
-dv.paragraph(`**📈 Total facturado:** $${(sumaCobrado + sumaPendiente).toLocaleString()}`);
+dv.header(3, "⏳ Pendiente esta semana");
+dv.header(2, `$${sumaPendienteSe.toLocaleString()}`);
+dv.paragraph(`${pendientesSemana.length} pendiente(s)`);
 
-// --- PRESUPUESTOS PENDIENTES DE RESPUESTA ---
-dv.header(3, "📝 Presupuestos esperando respuesta");
+dv.paragraph("===\n");
 
-const presupuestos = todosTrabajos
-    .filter(p => p.estado && p.estado.includes("Presupuesto"))
-    .filter(p => {
-        if (!p.fecha) return false;
-        const diasDesdePresup = Math.floor((hoy - new Date(String(p.fecha) + 'T12:00:00')) / (1000 * 60 * 60 * 24));
-        return diasDesdePresup <= 30; // últimos 30 días
-    });
+dv.header(3, "📈 Acumulado histórico cobrado");
+dv.header(1, `$${totalCobrado.toLocaleString()}`);
 
-if (presupuestos.length > 0) {
-    dv.table(
-        ["📋 Presupuesto", "Cliente", "📅 Fecha", "💰 Monto"],
-        presupuestos
-            .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)))
-            .map(p => [
-                p.file.link,
-                p.cliente || "—",
-                String(p.fecha || "Sin fecha"),
-                p.mano_de_obra ? `$${Number(p.mano_de_obra).toLocaleString()}` : "—"
-            ])
-    );
-} else {
-    dv.paragraph("_No hay presupuestos pendientes._");
-}
-
-// --- DIARIO DE LA SEMANA ---
-dv.header(3, "📓 Notas del diario de esta semana");
-
-const notasDiario = dv.pages('"05_DIARIO"')
-    .filter(n => {
-        const nombre = n.file.name;
-        return nombre.includes(fechaStart) || (n.fecha && estaEnSemana(n.fecha));
-    });
-
-// Buscar notas que coincidan con los días de la semana
-const diasSemana = [];
-for (let d = lunesInicio; d <= viernesFin; d.setDate(d.getDate() + 1)) {
-    diasSemana.push(d.toISOString().split('T')[0]);
-}
-
-const notasEncontradas = dv.pages('"05_DIARIO"')
-    .filter(n => diasSemana.some(dia => n.file.name.includes(dia)));
-
-if (notasEncontradas.length > 0) {
-    dv.list(notasEncontradas.map(n => n.file.link));
-    // Agregar enlaces para crear las notas que faltan
-    const nombresEncontrados = notasEncontradas.map(n => n.file.name);
-    const faltantes = diasSemana.filter(dia => !nombresEncontrados.some(n => n.includes(dia)));
-    if (faltantes.length > 0) {
-        dv.paragraph("_Notas sin crear:_ " + faltantes.map(f => `[[05_DIARIO/${f}]]`).join(", "));
-    }
-} else {
-    dv.paragraph("_No hay notas de diario esta semana._");
-    dv.paragraph("Días disponibles: " + diasSemana.map(d => `[[05_DIARIO/${d}]]`).join(", "));
-}
+dv.header(3, "🚨 Deuda total acumulada");
+dv.header(2, `$${totalDeuda.toLocaleString()}`);
+dv.paragraph(`${todosDeudas.length} cliente(s) con deuda`);
 ```
 
 ---
 
-## 🚨 Deudas Activas (Recordatorio)
+## 🔥 Trabajos en Curso
 
 ```dataview
-TABLE cliente AS "Cliente", mano_de_obra AS "Monto", fecha AS "Fecha Trabajo"
+TABLE cliente AS "Cliente", dirección AS "Dirección", prioridad AS "Prioridad", mano_de_obra AS "Presupuesto"
+FROM "01_TRABAJOS"
+WHERE estado = "🛠️ En curso"
+SORT prioridad ASC
+```
+
+---
+
+## 📝 Presupuestos Pendientes de Cerrar
+
+```dataview
+TABLE cliente AS "Cliente", dirección AS "Dirección", fecha AS "Fecha", mano_de_obra AS "Monto"
+FROM "01_TRABAJOS"
+WHERE estado = "🛠️ Presupuesto"
+SORT fecha DESC
+```
+
+---
+
+## 🚨 Cobranzas Urgentes
+
+```dataview
+TABLE cliente AS "Cliente", mano_de_obra AS "Monto", fecha AS "Fecha Trabajo", dirección AS "Dirección"
 FROM "01_TRABAJOS"
 WHERE estado = "🛠️ Terminado" AND (pagado = false OR pagado = "false")
 SORT mano_de_obra DESC
 ```
 
+### Deuda total
+
+```dataviewjs
+const todos = dv.pages('"01_TRABAJOS"');
+const deudas = todos.filter(p => 
+    p.estado && p.estado.includes('Terminado') && 
+    (p.pagado === false || p.pagado === "false")
+);
+const total = deudas.length > 0 
+    ? deudas.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
+dv.header(2, `💸 $${total.toLocaleString()} en la calle`);
+dv.paragraph(`${deudas.length} trabajo(s) sin cobrar`);
+```
+
 ---
 
-## 📅 Próximos Compromisos
+## 📋 Trabajos de la Semana
 
-```dataview
-TABLE cliente AS "Cliente", dirección AS "Dirección", fecha AS "Fecha", prioridad AS "Prioridad"
-FROM "01_TRABAJOS"
-WHERE estado = "🛠️ En curso" OR estado = "🛠️ Pendiente" OR estado = "🛠️ pendiente"
-SORT fecha ASC
+### Finalizados esta semana
+
+```dataviewjs
+const ahora = new Date();
+const inicioSemana = new Date(ahora);
+inicioSemana.setDate(ahora.getDate() - ahora.getDay() + 1);
+const finSemana = new Date(inicioSemana);
+finSemana.setDate(inicioSemana.getDate() + 6);
+const inicioStr = inicioSemana.toISOString().split('T')[0];
+const finStr = finSemana.toISOString().split('T')[0];
+
+const terminados = dv.pages('"01_TRABAJOS"').filter(p => {
+    if (!p.fecha_cierre && !p.fecha) return false;
+    const f = p.fecha_cierre ? String(p.fecha_cierre).substring(0, 10) : String(p.fecha).substring(0, 10);
+    const terminado = p.estado && p.estado.includes('Terminado');
+    return f >= inicioStr && f <= finStr && terminado;
+});
+
+if (terminados.length > 0) {
+    dv.table(["Cliente", "Dirección", "Monto", "Estado Pago"],
+        terminados.map(p => [
+            p.cliente || "Sin nombre",
+            p.dirección || "N/A",
+            `$${(p.mano_de_obra || 0).toLocaleString()}`,
+            (p.pagado === true || p.pagado === "true") ? "✅ Cobrado" : "⏳ Pendiente"
+        ])
+    );
+} else {
+    dv.paragraph("_No hay trabajos finalizados registrados esta semana._");
+}
 ```
+
+---
+
+## 💰 Comparativa Mensual
+
+```dataviewjs
+// Mes actual vs mes anterior
+const ahora = new Date();
+const mesActual = ahora.toISOString().substring(0, 7); // "2026-04"
+const mesAnt = new Date(ahora.getFullYear(), ahora.getMonth() - 1, 1)
+    .toISOString().substring(0, 7);
+
+const todos = dv.pages('"01_TRABAJOS"');
+const pagados = todos.filter(p => p.pagado === true || p.pagado === "true");
+
+const mesAct = pagados.filter(p => {
+    if (!p.fecha) return false;
+    return String(p.fecha).includes(mesActual);
+});
+
+const mesAnt = pagados.filter(p => {
+    if (!p.fecha) return false;
+    return String(p.fecha).includes(mesAnt);
+});
+
+const totalMesAct = mesAct.length > 0 
+    ? mesAct.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
+
+const totalMesAnt = mesAnt.length > 0 
+    ? mesAnt.mano_de_obra.array().reduce((a, b) => a + b, 0) 
+    : 0;
+
+// Mes con nombre en español
+const nombresMes = {
+    "01": "Enero", "02": "Febrero", "03": "Marzo", "04": "Abril",
+    "05": "Mayo", "06": "Junio", "07": "Julio", "08": "Agosto",
+    "09": "Septiembre", "10": "Octubre", "11": "Noviembre", "12": "Diciembre"
+};
+
+const mesActNom = nombresMes[mesActual.substring(5)] || mesActual.substring(5);
+const mesAntNom = nombresMes[mesAnt.substring(5)] || mesAnt.substring(5);
+
+dv.header(2, `📊 ${mesActNom} vs ${mesAntNom}`);
+dv.paragraph(`**${mesActNom} (actual):** $${totalMesAct.toLocaleString()} (${mesAct.length} cobros)`);
+dv.paragraph(`**${mesAntNom} (anterior):** $${totalMesAnt.toLocaleString()} (${mesAnt.length} cobros)`);
+
+if (totalMesAnt > 0) {
+    const diff = ((totalMesAct - totalMesAnt) / totalMesAnt * 100).toFixed(1);
+    const emoji = diff >= 0 ? "📈" : "📉";
+    dv.paragraph(`${emoji} **Diferencia:** ${diff}%`);
+} else if (totalMesAct > 0) {
+    dv.paragraph("🆕 Primer cobro registrado");
+}
+```
+
+---
+
+## 📌 Notas de la Semana
+
+- _Agregar notas, recordatorios o pendientes aquí_
+
+---
+
+*Generado el 2026-04-06 — Se actualiza automáticamente con Dataview*
